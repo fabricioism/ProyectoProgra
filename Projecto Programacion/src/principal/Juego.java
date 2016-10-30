@@ -16,10 +16,9 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import medios.Jugador;
-import medios.TileMap;
 
 
-public class Juego extends Canvas implements KeyListener{
+public class Juego extends Canvas {
 	private JFrame ventana;
 	private BufferStrategy dobleBuffer;
 	private Graphics2D g2D;
@@ -31,26 +30,7 @@ public class Juego extends Canvas implements KeyListener{
 
 	int lastFpsTime; 
 	int fps; 
-	private int tileMap[][]={
-			{1 , 0 , 0 ,0 , 0 ,0, 0},
-			{0 , 0 , 0 ,0 , 0 ,0, 0},
-			{0 , 0 , 0 ,0 , 0 ,0, 0},
-			{0 , 0 , 0 ,0 , 0 ,0, 0},
-			{0 , 0 , 0 ,0 , 0 ,0, 0},
-			{0 , 0 , 0 ,0 , 0 ,0, 0},
-			{0 , 0 , 0 ,0 , 0 ,0, 0},
-			{0 , 0 , 0 ,0 , 0 ,0, 0},
-			{0 , 0 , 0 ,0 , 0 ,0, 0},
-			{0 , 0 , 0 ,0 , 0 ,0, 0},
-			{0 , 0 , 0 ,0 , 0 ,0, 0},
-			{0 , 0 , 0 ,0 , 0 ,0, 0},
-			{0 , 0 , 0 ,0 , 0 ,0, 0},
-			{0 , 0 , 0 ,0 , 0 ,0, 0},
-			{0 , 0 , 0 ,0 , 0 ,0, 0},
-			{0 , 0 , 0 ,0 , 0 ,0, 0}
-
-	};
-	
+		
 	public static HashMap<String,BufferedImage> terreno = new HashMap<String,BufferedImage>();
 	//public static HashMap<String,BufferedImage> orillas = new HashMap<String, BufferedImage>();
 
