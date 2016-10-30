@@ -1,6 +1,9 @@
 package principal;
 
+import java.awt.BufferCapabilities;
 import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -12,55 +15,124 @@ import java.util.HashMap;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+import medios.Jugador;
 import medios.TileMap;
 
-public class Juego extends Canvas{
-	public static final int anchoVentana= 500;
-	public static final int altoVentana= 500;
-	private JFrame juego;
-	public static HashMap<String, BufferedImage> campos;
-	
-	private Graphics2D g2D;
+
+public class Juego extends Canvas implements KeyListener{
+	private JFrame ventana;
 	private BufferStrategy dobleBuffer;
+	private Graphics2D g2D;
+
+	private boolean jugando  = false;
+
+	public static final int ANCHO_VENTANA = 700;
+	public static final int ALTO_VENTANA = 500;
+
 	int lastFpsTime; 
 	int fps; 
+	private int tileMap[][]={
+			{1 , 0 , 0 ,0 , 0 ,0, 0},
+			{0 , 0 , 0 ,0 , 0 ,0, 0},
+			{0 , 0 , 0 ,0 , 0 ,0, 0},
+			{0 , 0 , 0 ,0 , 0 ,0, 0},
+			{0 , 0 , 0 ,0 , 0 ,0, 0},
+			{0 , 0 , 0 ,0 , 0 ,0, 0},
+			{0 , 0 , 0 ,0 , 0 ,0, 0},
+			{0 , 0 , 0 ,0 , 0 ,0, 0},
+			{0 , 0 , 0 ,0 , 0 ,0, 0},
+			{0 , 0 , 0 ,0 , 0 ,0, 0},
+			{0 , 0 , 0 ,0 , 0 ,0, 0},
+			{0 , 0 , 0 ,0 , 0 ,0, 0},
+			{0 , 0 , 0 ,0 , 0 ,0, 0},
+			{0 , 0 , 0 ,0 , 0 ,0, 0},
+			{0 , 0 , 0 ,0 , 0 ,0, 0},
+			{0 , 0 , 0 ,0 , 0 ,0, 0}
+
+	};
 	
+	public static HashMap<String,BufferedImage> terreno = new HashMap<String,BufferedImage>();
+	//public static HashMap<String,BufferedImage> orillas = new HashMap<String, BufferedImage>();
+
 	public Juego(){
-		ventanaJuego();
-		cicloJuego();
-		juego.setVisible(true);
+		cargarImagenes();
+
+		incializarVentana();
+
+		createBufferStrategy(2); 
+		dobleBuffer = getBufferStrategy(); 
+		jugando = true;
+
+		cicloPrincipal();
 	}
-	
-	public void ventanaJuego(){
-		juego=new JFrame("hertz");
-		juego.setSize(anchoVentana, altoVentana);
-		juego.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		juego.setLocationRelativeTo(null);
-		juego.setLayout(null);
-		juego.setResizable(false);
-		juego.getContentPane().add(this);
+
+	public void incializarVentana(){
+		
+		ventana = new JFrame(); 
+		ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
+		ventana.setSize(ANCHO_VENTANA, ALTO_VENTANA); 
+		ventana.setLocationRelativeTo(null); 
+		ventana.setTitle("Establezca el titulo de su conveniencia"); 
+		ventana.getContentPane().add(this); 
+		ventana.setVisible(true); 
 	}
-	
+
+
+
+
 	public void cargarImagenes(){
+
 		try {
-			BufferedImage mosaico = ImageIO.read(getClass().getResource("/imagenes/terreno.jpg"));
-			campos.put("lava", mosaico.getSubimage(0, 0, 240, 240));
+			BufferedImage superficie = ImageIO.read(getClass().getResource("/imagenes/terreno.jpg"));
+			BufferedImage bordes = ImageIO.read(getClass().getResource("/imagenes/orillas.jpg"));
+			terreno.put("cesped", superficie.getSubimage(0, 0,192, 192));
+			terreno.put("lava", superficie.getSubimage(192, 0, 192, 192));
+			terreno.put("orillaH", bordes.getSubimage(32, 128, 32, 32));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	public void pintar(){
-		g2D = (Graphics2D) dobleBuffer.getDrawGraphics();
-		g2D.drawImage(campos.get("lava"), 50, 50, this);
-		dobleBuffer.show();
-	}
+
+
+
+	private void pintar(){
+        g2D = (Graphics2D)dobleBuffer.getDrawGraphics(); 
+     
+        			g2D.drawImage(terreno.get("cesped"), 30, 30, this);
+        			g2D.drawImage(terreno.get("lava"), 50, 50, this);
+        			g2D.drawImage(terreno.get("orillaH"), 50, 50, this);
+
+
+
+        dobleBuffer.show(); 	}
+
 	
-	public void cicloJuego(){
-		pintar();
-	}
-	public static void main(String [] args){
-		new Juego();
-	}
-	
+
+	public void cicloPrincipal(){
+	   long lastLoopTime = System.nanoTime();
+       final int TARGET_FPS = 60;
+       final long OPTIMAL_TIME = 1000000000 / TARGET_FPS;
+
+       while (jugando){
+    	   long now = System.nanoTime();
+    	   long updateLength = now - lastLoopTime;
+    	   lastLoopTime = now;
+    	  
+    	   lastFpsTime += updateLength;
+    	   fps++;
+    	   if (lastFpsTime >= 1000000000){
+    		   System.out.println("(FPS: "+fps+")");
+    		   lastFpsTime = 0;
+    		   fps = 0;
+    	   }
+    	   pintar();
+    	   try{Thread.sleep((lastLoopTime-System.nanoTime() + OPTIMAL_TIME)/1000000 );} //Puede sustituir el valor de la pausa por un valor fijo
+    	   catch(Exception e){};
+       }
+    }
+
+    public static void main(String[] args){
+		new Juego(); 	
+		}
+    
 }
