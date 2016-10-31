@@ -1,11 +1,13 @@
 package medios;
 
+import java.awt.Canvas;
 import java.awt.Graphics2D;
+import java.awt.image.BufferStrategy;
 import java.awt.image.ImageObserver;
 
 import principal.Juego;
 
-public class Jugador {
+public class Jugador extends Canvas {
 	private String nombreJugador;
 	private int x;
 	private int y;
@@ -13,6 +15,8 @@ public class Jugador {
 	private int anchoImagen;
 	private int altoImagen;
 	private String llaveImagen;
+	private Graphics2D g2D;
+	private BufferStrategy dobleBuffer;
 	public Jugador(String nombreJugador, int x, int y, int velocidad, String llaveImagen) {
 		this.nombreJugador = nombreJugador;
 		this.x = x;
@@ -68,12 +72,16 @@ public class Jugador {
 	}
 
 	public void mover(){
+		 g2D = (Graphics2D)dobleBuffer.getDrawGraphics();
+		
 		if(Juego.derecha)
+			
 			x+=velocidad;
 
 		if(Juego.izquierda)
+			{g2D.drawImage(Juego.imagenes.get("caminandoI"), 250, 250, this);
 			x-=velocidad;
-
+			}
 		if(Juego.arriba)
 			y-=velocidad;
 
