@@ -55,6 +55,7 @@ public class Juego extends Canvas implements KeyListener {
 		ventana.setSize(ancho, alto); 
 		ventana.setLocationRelativeTo(null); 
 		ventana.setTitle("Establezca el titulo de su conveniencia"); 
+		ventana.setResizable(false);
 		ventana.getContentPane().add(this); 
 		ventana.setVisible(true); 
 	}
